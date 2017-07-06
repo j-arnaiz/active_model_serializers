@@ -56,7 +56,13 @@ module ActiveModel
         options[:include_data_setting] = Serializer.config.include_data_default
         options[:meta] = nil
         @type = options.fetch(:type) do
-          class_name = options.fetch(:class_name, name.to_s.camelize.singularize)
+          class_name = if options[:polymorphic]
+                         (object && object.type) || 'patata'
+                       else
+                         puts 'no polymorphic'
+                         options.fetch(:class_name, name.to_s.camelize.singularize)
+                       end
+          puts "class_name #{class_name}"
           class_name.underscore.pluralize.to_sym
         end
         @foreign_key = options.fetch(:foreign_key) do
